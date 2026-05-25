@@ -297,6 +297,13 @@ loader.load(
 
 
         // ==============================================
+        // DEBUG
+        // ==============================================
+        console.log(model);
+
+
+
+        // ==============================================
         // ESCALA
         // ==============================================
         model.scale.set(1, 1, 1);
@@ -304,15 +311,33 @@ loader.load(
 
 
         // ==============================================
-        // SOMBRAS
+        // POSICION
+        // ==============================================
+        model.position.set(0, 0, 0);
+
+
+
+        // ==============================================
+        // ROTACION
+        // ==============================================
+        model.rotation.set(0, 0, 0);
+
+
+
+        // ==============================================
+        // HACER VISIBLES TODOS LOS MATERIALES
         // ==============================================
         model.traverse((child) => {
 
             if(child.isMesh){
 
-                child.castShadow = true;
+                child.material.side = THREE.DoubleSide;
 
-                child.receiveShadow = true;
+                child.material.transparent = false;
+
+                child.material.opacity = 1;
+
+                console.log(child);
 
             }
 
@@ -321,24 +346,47 @@ loader.load(
 
 
         // ==============================================
-        // AGREGAR MODELO
+        // AGREGAR
         // ==============================================
         scene.add(model);
 
 
 
         // ==============================================
-        // CENTRAR
+        // CAJA
         // ==============================================
         const box = new THREE.Box3()
             .setFromObject(model);
 
+        console.log(box);
+
+
+
+        // ==============================================
+        // TAMAÑO
+        // ==============================================
+        const size = box.getSize(
+            new THREE.Vector3()
+        );
+
+        console.log(size);
+
+
+
+        // ==============================================
+        // CENTRO
+        // ==============================================
         const center = box.getCenter(
             new THREE.Vector3()
         );
 
+        console.log(center);
 
 
+
+        // ==============================================
+        // CENTRAR
+        // ==============================================
         model.position.x -= center.x;
 
         model.position.z -= center.z;
@@ -347,20 +395,45 @@ loader.load(
 
 
 
+        // ==============================================
+        // CAMARA
+        // ==============================================
+        camera.position.set(
+
+            0,
+            size.y,
+            size.z * 2
+
+        );
+
+
+
+        controls.getObject().position.set(
+
+            0,
+            1.7,
+            size.z * 2
+
+        );
+
+
+
         console.log('MODELO CARGADO');
 
     },
 
+
+
     function(xhr){
 
         console.log(
-
             (xhr.loaded / xhr.total * 100)
             + '% cargado'
-
         );
 
     },
+
+
 
     function(error){
 
